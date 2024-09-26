@@ -41,6 +41,9 @@ const HelloTokenSection = ({ gatewayApi }: any) => {
 
     const detailedItems = await Promise.all(
       balance2.map(async (item: any) => {
+        console.log('item.vaults.total_count',item.vaults.items[0].total_count)
+        const count = await item.vaults.items[0].total_count;
+        console.log(count)
         if (item.vaults.total_count > 0) {
           const detailedItem = await gatewayApi.state.getEntityMetadata(item.resource_address);
           const iconUrlItem = detailedItem.items.find((detail: any) => detail.key === 'icon_url');
@@ -65,30 +68,25 @@ const HelloTokenSection = ({ gatewayApi }: any) => {
 
     console.log('combinedData', combinedData)
 
-    //console.log("balance2", balance2[0].resource_address);
     setNfts(combinedData as any);
-    //console.log("combinedData: ", combinedData);
-    //console.log("componentDetails2: ", componentDetails2.items[1].value.typed);
   }
 
   const BurnBabyBurn = async (resource: any) => {
     const my_account = accounts[0].address;
     const manifest = `
     CALL_METHOD
-    Address("${my_account}")
-    "withdraw"
-    Address("${resource}")
-  Decimal("1");
+      Address("${my_account}")
+      "withdraw"
+      Address("${resource}")
+      Decimal("1");
           
-TAKE_ALL_FROM_WORKTOP
-    Address("${resource}")
-    Bucket("xrd_bucket")
-;
-BURN_RESOURCE
-    Bucket("xrd_bucket")
-;
-      `;
-    /* */
+    TAKE_ALL_FROM_WORKTOP
+      Address("${resource}")
+      Bucket("xrd_bucket");
+    BURN_RESOURCE
+      Bucket("xrd_bucket");
+    `;
+
     console.log("manifest:", manifest);
 
     const result = await sendTransaction(manifest).finally(() =>
@@ -104,9 +102,9 @@ BURN_RESOURCE
       <h1>Withdraw / Payback</h1>
       <div className="nft-card-container">
         {nfts && nfts.map((nft: any) => (
-          <div className="nft-card" key={nft.id}>
+          <div className="nft-card" key={nft.resource_address}>
             <NftCard
-              key={nft.id}
+              key={nft.resource_address}
               id={nft.name}
               resourceAddress={nft.resource_address}
               imageUrl={nft.detailedItem.iconUrl}

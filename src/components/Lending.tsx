@@ -1,21 +1,14 @@
 import { useState, useEffect, useContext } from "react";
 import { useAccount } from "../AccountContext";
 import { DepositButton } from "./DepositButton";
-import { CustomSelect } from "./CustomSelect";
 
-import {RadixDappToolkit, RadixNetwork} from "@radixdlt/radix-dapp-toolkit";
-import { GatewayApiClient } from "@radixdlt/babylon-gateway-api-sdk";
-
-import { GatewayApiProvider } from "../context/GatewayApiProvider.js";
-
-
-const HelloTokenSection = ( {gatewayApi} : any ) => {
+const HelloTokenSection = ({ gatewayApi }: any) => {
   const { accounts, selectedAccount, setSelectedAccount } = useAccount();
   const [enableButtons, setEnableButtons] = useState(false);
   const [active, setActive] = useState(false);
-  const [balance, setBalance] = useState(0); 
+  const [balance, setBalance] = useState(0);
 
-  console.log("gatewayApigatewayApigatewayApi",gatewayApi)
+  console.log("gatewayApigatewayApigatewayApi", gatewayApi)
   useEffect(() => {
     if (accounts.length > 0) {
       setEnableButtons(true);
@@ -26,23 +19,13 @@ const HelloTokenSection = ( {gatewayApi} : any ) => {
       setEnableButtons(false);
     }
   }, [accounts]);
-/*
-          <CustomSelect
-            active={active}
-            setActive={setActive}
-            enableButtons={enableButtons}
-          />
-*/
 
-
-const getBalance =  async() => {
-  const componentDetails = await gatewayApi.state.getEntityDetailsVaultAggregated("account_tdx_2_12yrpw3958zfqq7swxcgw5hau97xm8azde9pu5w7sv83ea4skauvrtp");
-  const balance2 = parseFloat(componentDetails.fungible_resources.items[0].vaults.items[0].amount);
-  setBalance(balance2);
-  console.log("componentDetails: ", componentDetails.fungible_resources.items[0].vaults.items[0].amount);
-}
-
- 
+  const getBalance = async () => {
+    const componentDetails = await gatewayApi.state.getEntityDetailsVaultAggregated("account_tdx_2_12yrpw3958zfqq7swxcgw5hau97xm8azde9pu5w7sv83ea4skauvrtp");
+    const balance2 = parseFloat(componentDetails.fungible_resources.items[0].vaults.items[0].amount);
+    setBalance(balance2);
+    console.log("componentDetails: ", componentDetails.fungible_resources.items[0].vaults.items[0].amount);
+  }
 
   return (
     <>
